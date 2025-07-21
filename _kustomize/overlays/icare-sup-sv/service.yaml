@@ -1,0 +1,56 @@
+apiVersion: aws.project-planton.org/v1
+kind: AwsEcsService
+metadata:
+  annotations:
+    audit.planton.cloud/previousRevision: ver_01k0pf7b0b9ndzc6br94ftt16r
+  env: icare-sup-sv
+  name: icare-sup-sv-fe
+spec:
+  alb:
+    arn:
+      valueFrom:
+        env: icare-sup-sv
+        fieldPath: status.outputs.loadBalancerArn
+        kind: AwsAlb
+        name: icare-sup-sv-ecs-services-alb
+    enabled: true
+    hostname: icare-sup-sv-fe.icare-sup-sv.inxtuniverse.com
+    listenerPort: 443
+    routingType: hostname
+  clusterArn:
+    valueFrom:
+      env: icare-sup-sv
+      fieldPath: status.outputs.clusterArn
+      kind: AwsEcsCluster
+      name: icare-sup-sv-ecs-cluster
+  container:
+    cpu: 256
+    env:
+      variables:
+        SERVICE_NAME: icare-sup-sv-fe
+    image:
+      repo: nginx
+      tag: latest
+    memory: 512
+    port: 80
+    replicas: 1
+  iam:
+    taskExecutionRoleArn:
+      valueFrom:
+        env: icare-sup-sv
+        fieldPath: status.outputs.roleArn
+        kind: AwsIamRole
+        name: icare-sup-sv-ecs-task-execution-role
+  network:
+    securityGroups:
+    - valueFrom:
+        env: icare-sup-sv
+        fieldPath: status.outputs.securityGroupId
+        kind: AwsSecurityGroup
+        name: icare-sup-sv-http-ingress-and-all-egress
+    subnets:
+    - valueFrom:
+        env: icare-sup-sv
+        fieldPath: status.outputs.privateSubnets.[0].id
+        kind: AwsVpc
+        name: icare-sup-sv-vpc

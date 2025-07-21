@@ -1,0 +1,5 @@
+apiVersion: aws.project-planton.org/v1
+kind: AwsEcsService
+metadata:
+  name: icare-sup-sv-fe
+  org: technxt
